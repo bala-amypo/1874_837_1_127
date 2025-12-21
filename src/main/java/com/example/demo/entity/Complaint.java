@@ -39,16 +39,87 @@ public class Complaint {
 
     @PrePersist
     public void onCreate() {
-        createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
-    // ✅ REQUIRED SETTERS
+    /* ===================== GETTERS ===================== */
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public Integer getPriorityScore() {
+        return priorityScore;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public ComplaintStatus getStatus() {
+        return status;
+    }
+
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public User getAssignedAgent() {
+        return assignedAgent;
+    }
+
+    public List<PriorityRule> getPriorityRules() {
+        return priorityRules;
+    }
+
+    /* ===================== SETTERS ===================== */
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public void setPriorityScore(Integer priorityScore) {
+        this.priorityScore = priorityScore;
+    }
+
     public void setStatus(ComplaintStatus status) {
         this.status = status;
-    }
-
-    public void setCustomer(User customer) {
-        this.customer = customer;
     }
 
     public void setSeverity(Severity severity) {
@@ -59,7 +130,15 @@ public class Complaint {
         this.urgency = urgency;
     }
 
-    public Long getId() {
-        return id;
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
+
+    public void setAssignedAgent(User assignedAgent) {
+        this.assignedAgent = assignedAgent;
+    }
+
+    public void setPriorityRules(List<PriorityRule> priorityRules) {
+        this.priorityRules = priorityRules;
     }
 }
