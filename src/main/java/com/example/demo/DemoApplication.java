@@ -1,4 +1,3 @@
-
 package com.example.demo;
 
 import org.springframework.boot.SpringApplication;
@@ -6,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @SpringBootApplication
-@ServletComponentScan   // ✅ THIS IS REQUIRED
+@ServletComponentScan   // 🔥 THIS IS REQUIRED
 public class DemoApplication {
 
     public static void main(String[] args) {

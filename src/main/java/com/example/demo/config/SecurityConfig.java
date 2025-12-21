@@ -33,8 +33,9 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ PUBLIC ENDPOINTS (PORTAL + TEST CASES)
+                // 🔥 AMYPO NEEDS ROOT ACCESS
                 .requestMatchers(
+                        "/",
                         "/ping",
                         "/health",
                         "/swagger-ui/**",
@@ -42,7 +43,6 @@ public class SecurityConfig {
                         "/api/test"
                 ).permitAll()
 
-                // everything else secured
                 .anyRequest().authenticated()
             );
 
