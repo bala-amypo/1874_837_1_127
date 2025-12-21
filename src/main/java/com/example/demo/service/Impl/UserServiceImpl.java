@@ -1,33 +1,40 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
+    private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repository, PasswordEncoder encoder) {
+        this.repository = repository;
+        this.encoder = encoder;
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public User registerCustomer(String name, String email, String password) {
+        if (repository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("email already exists");
+        }
+
+        User user = new User();
+        user.setFullName(name);
+        user.setEmail(email);
+        user.setPassword(encoder.encode(password));
+        user.setRole(Role.CUSTOMER);
+
+        return repository.save(user);
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByEmail(username);
-    }
-
-    // ❌ NO @Override here
-    public User save(User user) {
-        return userRepository.save(user);
+    public User findByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
