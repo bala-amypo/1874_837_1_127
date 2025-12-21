@@ -13,32 +13,63 @@ import java.util.List;
 @RequestMapping("/complaints")
 public class ComplaintController {
 
-    private final ComplaintService service;
+    private final ComplaintService complaintService;
     private final UserService userService;
 
-    public ComplaintController(ComplaintService service,
+    public ComplaintController(ComplaintService complaintService,
                                UserService userService) {
-        this.service = service;
+        this.complaintService = complaintService;
         this.userService = userService;
     }
 
+    // ==========================
+    // POST → CREATE COMPLAINT
+    // ==========================
     @PostMapping("/submit")
-    public Complaint submit(@RequestBody ComplaintRequest req,
-                            @RequestParam String email) {
+    public Complaint submitComplaint(
+            @RequestBody ComplaintRequest request,
+            @RequestParam String email) {
+
         User user = userService.findByEmail(email);
-        return service.submitComplaint(req, user);
+        return complaintService.submitComplaint(request, user);
     }
 
+    // ==========================
+    // GET → USER COMPLAINTS
+    // ==========================
     @GetMapping("/user/{email}")
-    public List<Complaint> userComplaints(@PathVariable String email) {
-        return service.getComplaintsForUser(
-                userService.findByEmail(email)
-        );
+    public List<Complaint> getUserComplaints(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        return complaintService.getComplaintsForUser(user);
     }
 
+    // ==========================
+    // GET → PRIORITIZED COMPLAINTS
+    // ==========================
     @GetMapping("/prioritized")
-    public List<Complaint> prioritized() {
-        return service.getPrioritizedComplaints();
+    public List<Complaint> getPrioritizedComplaints() {
+        return complaintService.getPrioritizedComplaints();
+    }
+
+    // ==========================
+    // PUT → UPDATE STATUS
+    // ==========================
+    @PutMapping("/status/{id}")
+    public Complaint updateStatus(
+            @PathVariable Long id,
+            @RequestParam Complaint.Status status) {
+
+        Complaint complaint = complaintService.getComplaintById(id);
+        complaint.setStatus(status);
+        return complaintService.save(complaint);
+    }
+
+    // ==========================
+    // DELETE → DELETE COMPLAINT
+    // ==========================
+    @DeleteMapping("/{id}")
+    public String deleteComplaint(@PathVariable Long id) {
+        complaintService.deleteComplaint(id);
+        return "Complaint deleted successfully";
     }
 }
-    
