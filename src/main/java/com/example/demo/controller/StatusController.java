@@ -4,6 +4,7 @@ import com.example.demo.entity.ComplaintStatus;
 import com.example.demo.entity.ComplaintStatusEntity;
 import com.example.demo.service.ComplaintStatusService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,13 +18,13 @@ public class StatusController {
     }
 
     @PutMapping("/update/{complaintId}")
-    public void update(@PathVariable Long complaintId,
-                       @RequestParam ComplaintStatus status) {
+    public void updateStatus(@PathVariable Long complaintId,
+                             @RequestParam ComplaintStatus status) {
         service.updateStatus(complaintId, status);
     }
 
     @GetMapping("/history/{complaintId}")
-    public List<ComplaintStatusEntity> history(@PathVariable Long complaintId) {
+    public List<ComplaintStatusEntity> getHistory(@PathVariable Long complaintId) {
         return service.getStatusHistory(complaintId);
     }
 }

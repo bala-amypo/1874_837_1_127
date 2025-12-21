@@ -19,15 +19,20 @@ public class ComplaintStatusEntity {
     private LocalDateTime updatedOn;
 
     @PrePersist
-    public void onUpdate() {
+    public void onCreate() {
         updatedOn = LocalDateTime.now();
+    }
+
+    // ✅ REQUIRED SETTERS
+    public void setComplaint(Complaint complaint) {
+        this.complaint = complaint;
+    }
+
+    public void setStatus(ComplaintStatus status) {
+        this.status = status;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public ComplaintStatus getStatus() {
-        return status;
     }
 }

@@ -12,13 +12,9 @@ public class Complaint {
     private Long id;
 
     private String title;
-
     private String description;
-
     private String category;
-
     private String channel;
-
     private Integer priorityScore;
 
     private LocalDateTime createdAt;
@@ -42,48 +38,17 @@ public class Complaint {
     private List<PriorityRule> priorityRules;
 
     @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
+    // ✅ REQUIRED SETTERS
+    public void setStatus(ComplaintStatus status) {
+        this.status = status;
     }
 
-    public Integer getPriorityScore() {
-        return priorityScore;
-    }
-
-    public User getCustomer() {
-        return customer;
-    }
-
-    public Severity getSeverity() {
-        return severity;
-    }
-
-    public Urgency getUrgency() {
-        return urgency;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
-    }
-
-    public void setPriorityScore(Integer priorityScore) {
-        this.priorityScore = priorityScore;
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 
     public void setSeverity(Severity severity) {
@@ -94,7 +59,7 @@ public class Complaint {
         this.urgency = urgency;
     }
 
-    public void setCustomer(User customer) {
-        this.customer = customer;
+    public Long getId() {
+        return id;
     }
 }
