@@ -1,11 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.User;
-import java.util.Optional;
 
 public interface UserService {
 
-    Optional<User> findById(Long id);
+    User registerCustomer(String name, String email, String password);
 
-    Optional<User> findByUsername(String username);
+    User findByEmail(String email);
 }
