@@ -46,4 +46,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository
                 .findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
+    @Override
+    public List<Complaint> getAllComplaints() {
+        return complaintRepository.findAll();
+}
+
 }
