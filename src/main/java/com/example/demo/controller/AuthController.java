@@ -13,25 +13,28 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
+    public AuthController(UserService userService,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
-    public User register(@RequestParam String name,
-                         @RequestParam String email,
-                         @RequestParam String password) {
-        return userService.registerCustomer(name, email, password);
+    public User register(@RequestBody AuthRequest req) {
+        return userService.registerCustomer(
+                "Customer",
+                req.getEmail(),
+                req.getPassword()
+        );
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        User user = userService.findByEmail(request.getEmail());
+    public AuthResponse login(@RequestBody AuthRequest req) {
 
+        User user = userService.findByEmail(req.getEmail());
         String token = jwtUtil.generateToken(
                 user.getEmail(),
-                user.getRole().name(),
+                user.getRole().toString(),
                 user.getId()
         );
 
@@ -39,7 +42,7 @@ public class AuthController {
                 token,
                 user.getId(),
                 user.getEmail(),
-                user.getRole().name()
+                user.getRole().toString()
         );
     }
 }
