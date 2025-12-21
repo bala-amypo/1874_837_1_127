@@ -1,10 +1,13 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.ComplaintRequest;
-import com.example.demo.entity.*;
+import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
-import com.example.demo.service.*;
+import com.example.demo.service.ComplaintService;
+import com.example.demo.service.PriorityRuleService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -14,24 +17,25 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final PriorityRuleService priorityRuleService;
 
     public ComplaintServiceImpl(ComplaintRepository repository,
-                                PriorityRuleService priorityRuleService) {
+                                PriorityRuleService priorityRuleService,
+                                UserServiceImpl userService) {
         this.repository = repository;
         this.priorityRuleService = priorityRuleService;
     }
 
     @Override
     public Complaint submitComplaint(ComplaintRequest request, User customer) {
-        Complaint complaint = new Complaint();
-        complaint.setTitle(request.title);
-        complaint.setDescription(request.description);
-        complaint.setCategory(request.category);
-        complaint.setChannel(request.channel);
-        complaint.setSeverity(request.severity);
-        complaint.setUrgency(request.urgency);
-        complaint.setCustomer(customer);
+        Complaint c = new Complaint();
+        c.setTitle(request.getTitle());
+        c.setDescription(request.getDescription());
+        c.setCategory(request.getCategory());
+        c.setChannel(request.getChannel());
+        c.setSeverity(request.getSeverity());
+        c.setUrgency(request.getUrgency());
+        c.setCustomer(customer);
 
-        complaint.setPriorityScore(priorityRuleService.computePriorityScore(complaint));
-        return repository.save(complaint);
+        c.setPriorityScore(priorityRuleService.computePriorityScore(c));
+        return repository.save(c);
     }
 
     @Override
