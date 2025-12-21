@@ -33,7 +33,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         c.setTitle(request.getTitle());
         c.setDescription(request.getDescription());
         c.setCategory(request.getCategory());
-        c.setPriorityScore(priorityRuleService.calculatePriority(request.getCategory()));
+        c.setPriorityScore(
+                priorityRuleService.calculatePriority(request.getCategory())
+        );
         c.setUser(user);
 
         return complaintRepository.save(c);
@@ -41,6 +43,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public List<Complaint> getPrioritizedComplaints() {
-        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
+        return complaintRepository
+                .findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
 }
