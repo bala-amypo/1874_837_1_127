@@ -11,33 +11,25 @@ public class ComplaintStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "complaint_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "complaint_id")
     private Complaint complaint;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(nullable = false)
+    private String status;
+
+    private String remarks;
 
     private LocalDateTime updatedAt;
 
-    public enum Status {
-        NEW,
-        IN_PROGRESS,
-        RESOLVED,
-        REJECTED
-    }
-
-    // Constructors
-    public ComplaintStatus() {
-    }
-
-    public ComplaintStatus(Complaint complaint, Status status) {
-        this.complaint = complaint;
-        this.status = status;
+    @PrePersist
+    @PreUpdate
+    public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    // getters and setters
+
     public Long getId() {
         return id;
     }
@@ -50,13 +42,20 @@ public class ComplaintStatus {
         this.complaint = complaint;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
-
-    public void setStatus(Status status) {
+    
+    public void setStatus(String status) {
         this.status = status;
-        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+    
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public LocalDateTime getUpdatedAt() {
