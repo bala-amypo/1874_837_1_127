@@ -25,38 +25,34 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // disable csrf
             .csrf(csrf -> csrf.disable())
 
-            // stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // authorization rules
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ allow root for WhiteLabel Error Page
-                .requestMatchers("/").permitAll()
+                // ✅ MUST allow error path (THIS IS KEY)
+                .requestMatchers("/", "/error").permitAll()
 
-                // ✅ Swagger access
+                // swagger
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**"
                 ).permitAll()
 
-                // ✅ auth APIs
+                // auth
                 .requestMatchers("/auth/**").permitAll()
 
-                // ✅ simple echo
+                // echo
                 .requestMatchers("/simple-echo").permitAll()
 
-                // 🔒 everything else secured
+                // everything else secured
                 .anyRequest().authenticated()
             )
 
-            // JWT filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -65,13 +61,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // authentication manager
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
