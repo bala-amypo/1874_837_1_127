@@ -19,8 +19,6 @@ public class PriorityRule {
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
-    public PriorityRule() {}
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -37,5 +35,4 @@ public class PriorityRule {
     public void setActive(boolean active) { this.active = active; }
 
     public Set<Complaint> getComplaints() { return complaints; }
-    public void setComplaints(Set<Complaint> complaints) { this.complaints = complaints; }
 }

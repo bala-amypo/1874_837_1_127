@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="users")
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
 
     public enum Role { CUSTOMER, AGENT, ADMIN }
@@ -14,15 +14,13 @@ public class User {
 
     private String fullName;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
-
-    public User() {}
+    private Role role = Role.CUSTOMER;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
