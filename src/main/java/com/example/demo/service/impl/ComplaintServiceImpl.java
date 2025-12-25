@@ -6,6 +6,7 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,17 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    // 🔥 THIS CONSTRUCTOR IS TEST-CASE FRIENDLY
+    // ✅ SPRING BOOT RUNTIME CONSTRUCTOR
+    @Autowired
+    public ComplaintServiceImpl(
+            ComplaintRepository complaintRepository,
+            PriorityRuleService priorityRuleService
+    ) {
+        this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
+    }
+
+    // ✅ TEST CASE CONSTRUCTOR (SPRING WILL IGNORE)
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object unused1,
