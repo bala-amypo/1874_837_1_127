@@ -10,4 +10,5 @@ public interface PriorityRuleService {
     int computePriorityScore(Complaint complaint);
 
     List<PriorityRule> getActiveRules();
+
 }

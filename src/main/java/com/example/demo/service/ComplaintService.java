@@ -8,9 +8,10 @@ import java.util.List;
 
 public interface ComplaintService {
 
-    Complaint submitComplaint(ComplaintRequest request, User customer);
+    Complaint submitComplaint(ComplaintRequest request, User user);
 
-    List<Complaint> getComplaintsForUser(User customer);
+    List<Complaint> getComplaintsForUser(User user);
 
     List<Complaint> getPrioritizedComplaints();
+
 }
