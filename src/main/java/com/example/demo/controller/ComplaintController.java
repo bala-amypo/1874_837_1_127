@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintRequest;
+import com.example.demo.dto.ComplaintResponse;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,61 +18,51 @@ public class ComplaintController {
 
     private final ComplaintService complaintService;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     public ComplaintController(ComplaintService complaintService,
-                               UserService userService) {
+                               UserService userService,
+                               JwtUtil jwtUtil) {
         this.complaintService = complaintService;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
-    // ==========================
-    // POST → CREATE COMPLAINT
-    // ==========================
     @PostMapping("/submit")
-    public Complaint submitComplaint(
-            @RequestBody ComplaintRequest request,
-            @RequestParam String email) {
+    public ResponseEntity<ComplaintResponse> submitComplaint(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ComplaintRequest request) {
+
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtUtil.extractEmail(token);
 
         User user = userService.findByEmail(email);
-        return complaintService.submitComplaint(request, user);
+        Complaint complaint = complaintService.submitComplaint(request, user);
+
+        ComplaintResponse response = new ComplaintResponse(
+                complaint.getId(),
+                complaint.getStatus().name(),
+                complaint.getPriorityScore(),
+                "Complaint submitted successfully"
+        );
+
+        return ResponseEntity.ok(response);
     }
 
-    // ==========================
-    // GET → USER COMPLAINTS
-    // ==========================
-    @GetMapping("/user/{email}")
-    public List<Complaint> getUserComplaints(@PathVariable String email) {
-        User user = userService.findByEmail(email);
-        return complaintService.getComplaintsForUser(user);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Complaint>> getComplaintsForUser(
+            @PathVariable Long userId) {
+
+        User user = userService.findById(userId);
+        return ResponseEntity.ok(
+                complaintService.getComplaintsForUser(user)
+        );
     }
 
-    // ==========================
-    // GET → PRIORITIZED COMPLAINTS
-    // ==========================
     @GetMapping("/prioritized")
-    public List<Complaint> getPrioritizedComplaints() {
-        return complaintService.getPrioritizedComplaints();
-    }
-
-    // ==========================
-    // PUT → UPDATE STATUS
-    // ==========================
-    @PutMapping("/status/{id}")
-    public Complaint updateStatus(
-            @PathVariable Long id,
-            @RequestParam Complaint.Status status) {
-
-        Complaint complaint = complaintService.getComplaintById(id);
-        complaint.setStatus(status);
-        return complaintService.save(complaint);
-    }
-
-    // ==========================
-    // DELETE → DELETE COMPLAINT
-    // ==========================
-    @DeleteMapping("/{id}")
-    public String deleteComplaint(@PathVariable Long id) {
-        complaintService.deleteComplaint(id);
-        return "Complaint deleted successfully";
+    public ResponseEntity<List<Complaint>> getPrioritizedComplaints() {
+        return ResponseEntity.ok(
+                complaintService.getPrioritizedComplaints()
+        );
     }
 }
