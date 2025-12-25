@@ -1,29 +1,18 @@
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+package com.example.demo.controller;
 
-    try {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
-        );
+import org.springframework.web.bind.annotation.*;
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
 
-        String token = jwtUtil.generateToken(
-                user.getEmail(),
-                user.getRole().name(),
-                user.getId()
-        );
+    @PostMapping("/login")
+    public String login() {
+        return "OK";
+    }
 
-        return ResponseEntity.ok(new AuthResponse(token));
-
-    } catch (Exception e) {
-        // 🔥 IMPORTANT: return 200, NOT 500
-        return ResponseEntity.ok(
-            Map.of("error", "Bad credentials")
-        );
+    @PostMapping("/register")
+    public String register() {
+        return "OK";
     }
 }
