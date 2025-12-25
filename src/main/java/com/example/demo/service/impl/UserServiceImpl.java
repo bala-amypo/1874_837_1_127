@@ -4,7 +4,11 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -19,7 +23,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerCustomer(String name, String email, String password) {
 
-        if (userRepository.findByEmail(email).isPresent()) {
+        Optional<User> existing = userRepository.findByEmail(email);
+        if (existing.isPresent()) {
             throw new RuntimeException("email already exists");
         }
 
@@ -34,6 +39,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

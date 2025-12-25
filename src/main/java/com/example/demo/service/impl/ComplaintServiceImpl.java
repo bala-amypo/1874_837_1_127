@@ -6,46 +6,47 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    // Constructor EXACTLY as expected by testcase
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object unused1,
             Object unused2,
-            PriorityRuleService priorityRuleService) {
-
+            PriorityRuleService priorityRuleService
+    ) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
     }
 
     @Override
-    public Complaint submitComplaint(ComplaintRequest request, User user) {
+    public Complaint submitComplaint(ComplaintRequest req, User customer) {
 
-        Complaint complaint = new Complaint();
-        complaint.setTitle(request.getTitle());
-        complaint.setDescription(request.getDescription());
-        complaint.setCategory(request.getCategory());
-        complaint.setChannel(request.getChannel());
-        complaint.setSeverity(request.getSeverity());
-        complaint.setUrgency(request.getUrgency());
-        complaint.setCustomer(user);
+        Complaint c = new Complaint();
+        c.setTitle(req.getTitle());
+        c.setDescription(req.getDescription());
+        c.setCategory(req.getCategory());
+        c.setChannel(req.getChannel());
+        c.setSeverity(req.getSeverity());
+        c.setUrgency(req.getUrgency());
+        c.setCustomer(customer);
 
-        int score = priorityRuleService.computePriorityScore(complaint);
-        complaint.setPriorityScore(score);
+        int score = priorityRuleService.computePriorityScore(c);
+        c.setPriorityScore(score);
 
-        return complaintRepository.save(complaint);
+        return complaintRepository.save(c);
     }
 
     @Override
-    public List<Complaint> getComplaintsForUser(User user) {
-        return complaintRepository.findByCustomer(user);
+    public List<Complaint> getComplaintsForUser(User customer) {
+        return complaintRepository.findByCustomer(customer);
     }
 
     @Override
