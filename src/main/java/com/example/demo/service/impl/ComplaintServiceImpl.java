@@ -16,10 +16,8 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    // NOTE: constructor matches tests (nulls allowed)
+    // ✅ CORRECT constructor (Spring-friendly)
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
-                                Object unused1,
-                                Object unused2,
                                 PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
@@ -50,7 +48,6 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public List<Complaint> getPrioritizedComplaints() {
-        return complaintRepository
-                .findAllOrderByPriorityScoreDescCreatedAtAsc();
+        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
 }
