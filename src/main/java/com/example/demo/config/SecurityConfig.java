@@ -22,7 +22,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
@@ -33,23 +33,19 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ MUST allow error path (THIS IS KEY)
+                // 🔥 THIS FIXES ACCESS DENIED
                 .requestMatchers("/", "/error").permitAll()
 
-                // swagger
+                // Swagger
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**"
                 ).permitAll()
 
-                // auth
-                .requestMatchers("/auth/**").permitAll()
+                // Auth & servlet
+                .requestMatchers("/auth/**", "/simple-echo").permitAll()
 
-                // echo
-                .requestMatchers("/simple-echo").permitAll()
-
-                // everything else secured
                 .anyRequest().authenticated()
             )
 
@@ -68,8 +64,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration
-    ) throws Exception {
-        return configuration.getAuthenticationManager();
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
