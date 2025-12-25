@@ -1,20 +1,22 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.PriorityRule;
+import com.example.demo.service.PriorityRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
 public class PriorityRuleController {
 
-    // Query parameter example
-    @GetMapping("/by-weight")
-    public String getByWeight(@RequestParam int weight) {
-        return "Rules with weight " + weight;
-    }
+    @Autowired
+    private PriorityRuleService priorityRuleService;
 
-    // Simple GET
-    @GetMapping("/all")
-    public String getAllRules() {
-        return "All priority rules";
+    @GetMapping("/active")
+    public ResponseEntity<List<PriorityRule>> getActiveRules() {
+        return ResponseEntity.ok(priorityRuleService.getActiveRules());
     }
 }

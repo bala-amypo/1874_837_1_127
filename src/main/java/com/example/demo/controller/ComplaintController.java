@@ -1,27 +1,44 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintRequest;
+import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
+import com.example.demo.service.ComplaintService;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/complaints")
 public class ComplaintController {
 
-    // POST – body parameters will show
-    @PostMapping("/submit")
-    public String submitComplaint(@RequestBody ComplaintRequest request) {
-        return "Complaint submitted: " + request.getTitle();
+    @Autowired
+    private ComplaintService complaintService;
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/submit/{userId}")
+    public ResponseEntity<Complaint> submitComplaint(
+            @PathVariable Long userId,
+            @RequestBody ComplaintRequest request
+    ) {
+        User user = userService.findById(userId);
+        Complaint complaint = complaintService.submitComplaint(request, user);
+        return ResponseEntity.ok(complaint);
     }
 
-    // GET – path variable will show
     @GetMapping("/user/{userId}")
-    public String getUserComplaints(@PathVariable Long userId) {
-        return "Complaints for user " + userId;
+    public ResponseEntity<List<Complaint>> getUserComplaints(@PathVariable Long userId) {
+        User user = userService.findById(userId);
+        return ResponseEntity.ok(complaintService.getComplaintsForUser(user));
     }
 
-    // GET – no input (still fine)
     @GetMapping("/prioritized")
-    public String getPrioritizedComplaints() {
-        return "Prioritized complaints list";
+    public ResponseEntity<List<Complaint>> getPrioritizedComplaints() {
+        return ResponseEntity.ok(complaintService.getPrioritizedComplaints());
     }
 }
