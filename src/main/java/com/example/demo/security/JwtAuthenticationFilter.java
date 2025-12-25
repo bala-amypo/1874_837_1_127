@@ -1,53 +1,67 @@
 package com.example.demo.security;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationFilter extends GenericFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService service;
+    private final CustomUserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil,
-                                   CustomUserDetailsService service) {
+                                   CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
-        this.service = service;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res,
-                         FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        String auth = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if (auth != null && auth.startsWith("Bearer ")) {
-            String token = auth.substring(7);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            String token = authHeader.substring(7);
             String email = jwtUtil.extractEmail(token);
 
-            UserDetails userDetails = service.loadUserByUsername(email);
+            if (email != null && !email.isEmpty()
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(email);
+
+                if (jwtUtil.validateToken(token, userDetails.getUsername())) {
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
                     );
 
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
         }
-        chain.doFilter(req, res);
+
+        filterChain.doFilter(request, response);
     }
 }
