@@ -4,6 +4,7 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.Collections;
 
 public class CustomUserDetailsService implements UserDetailsService {
@@ -14,8 +15,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.repo = repo;
     }
 
+    @Override
     public UserDetails loadUserByUsername(String email) {
-        User u = repo.findByEmail(email).orElseThrow();
+
+        User u = repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         return new org.springframework.security.core.userdetails.User(
                 u.getEmail(),
                 u.getPassword(),
