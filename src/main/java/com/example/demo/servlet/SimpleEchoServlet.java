@@ -1,5 +1,6 @@
 package com.example.demo.servlet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,18 +9,16 @@ import java.io.IOException;
 public class SimpleEchoServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse resp) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("text/plain");
+        response.setContentType("text/plain");
+        String msg = request.getParameter("message");
 
-        String name = req.getParameter("name");
-
-        if (name == null || name.trim().isEmpty()) {
-            resp.getWriter().write("Hello, Guest");
-        } else {
-            resp.getWriter().write("Hello, " + name.trim());
+        if (msg == null || msg.isBlank()) {
+            msg = "No message provided";
         }
+
+        response.getWriter().write("Echo: " + msg);
     }
 }
