@@ -11,8 +11,6 @@ public class ComplaintRequest {
     private Complaint.Severity severity;
     private Complaint.Urgency urgency;
 
-    public ComplaintRequest() {}
-
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
