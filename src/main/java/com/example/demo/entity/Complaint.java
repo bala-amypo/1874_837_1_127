@@ -8,9 +8,9 @@ import java.util.Set;
 @Entity
 public class Complaint {
 
-    public enum Status { NEW, OPEN, IN_PROGRESS, RESOLVED }
-    public enum Severity { LOW, MEDIUM, HIGH, CRITICAL }
-    public enum Urgency { LOW, MEDIUM, HIGH, IMMEDIATE }
+    public enum Severity {LOW, MEDIUM, HIGH, CRITICAL}
+    public enum Urgency {LOW, MEDIUM, HIGH, IMMEDIATE}
+    public enum Status {NEW, OPEN, IN_PROGRESS, RESOLVED}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,18 +20,19 @@ public class Complaint {
     private String description;
     private String category;
     private String channel;
+
     private Integer priorityScore;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
+
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private Severity severity;
 
     @Enumerated(EnumType.STRING)
     private Urgency urgency;
-
-    private LocalDateTime createdAt;
 
     @ManyToOne
     private User customer;
@@ -42,12 +43,10 @@ public class Complaint {
     @ManyToMany
     private Set<PriorityRule> priorityRules = new HashSet<>();
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    public Complaint() {}
 
-    // ===== GETTERS & SETTERS =====
+    @PrePersist
+    public void onCreate() { createdAt = LocalDateTime.now(); }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -68,6 +67,9 @@ public class Complaint {
     public void setPriorityScore(Integer priorityScore) { this.priorityScore = priorityScore; }
 
     public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
     public Severity getSeverity() { return severity; }
     public void setSeverity(Severity severity) { this.severity = severity; }
@@ -82,4 +84,5 @@ public class Complaint {
     public void setAssignedAgent(User assignedAgent) { this.assignedAgent = assignedAgent; }
 
     public Set<PriorityRule> getPriorityRules() { return priorityRules; }
+    public void setPriorityRules(Set<PriorityRule> priorityRules) { this.priorityRules = priorityRules; }
 }
