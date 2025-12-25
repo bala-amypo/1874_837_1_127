@@ -6,6 +6,7 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +17,17 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    // 👉 Spring Boot uses this constructor
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository,
-                                PriorityRuleService priorityRuleService) {
+    // 👉 SPRING BOOT WILL USE THIS CONSTRUCTOR
+    @Autowired
+    public ComplaintServiceImpl(
+            ComplaintRepository complaintRepository,
+            PriorityRuleService priorityRuleService
+    ) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
     }
 
-    // 👉 Testcases use THIS constructor (kept for compatibility)
+    // 👉 TESTNG USES THIS CONSTRUCTOR (DO NOT REMOVE)
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
             Object unused1,
@@ -36,6 +40,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public Complaint submitComplaint(ComplaintRequest req, User customer) {
+
         Complaint c = new Complaint();
         c.setTitle(req.getTitle());
         c.setDescription(req.getDescription());
