@@ -1,10 +1,12 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class SimpleEchoServlet extends HttpServlet {
 
@@ -13,12 +15,15 @@ public class SimpleEchoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         response.setContentType("text/plain");
-        String msg = request.getParameter("message");
+        PrintWriter out = response.getWriter();
 
-        if (msg == null || msg.isBlank()) {
-            msg = "No message provided";
+        String name = request.getParameter("name");
+
+        if (name == null || name.trim().isEmpty()) {
+            out.write("Hello, Guest");
+        } else {
+            out.write("Hello, " + name.trim());
         }
-
-        response.getWriter().write("Echo: " + msg);
+        out.flush();
     }
 }
