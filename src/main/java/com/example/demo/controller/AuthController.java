@@ -20,9 +20,6 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/register")
