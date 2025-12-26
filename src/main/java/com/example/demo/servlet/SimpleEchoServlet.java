@@ -1,24 +1,31 @@
 package com.example.demo.servlet;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet("/echo")
 public class SimpleEchoServlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         response.setContentType("text/plain");
-        String msg = request.getParameter("message");
+        PrintWriter out = response.getWriter();
 
-        if (msg == null || msg.isBlank()) {
-            msg = "No message provided";
+        String name = request.getParameter("name");
+
+        // Trim & validate name
+        if (name == null || name.trim().isEmpty()) {
+            out.write("Hello, Guest");
+        } else {
+            out.write("Hello, " + name.trim());
         }
-
-        response.getWriter().write("Echo: " + msg);
     }
 }
